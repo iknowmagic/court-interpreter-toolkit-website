@@ -73,9 +73,8 @@ export default function Home() {
             <em>Nothing you don&apos;t.</em>
           </h2>
           <p className="section-body reveal">
-            No accounts, no subscriptions, no cloud sync. Just a focused
-            practice tool that runs in your browser - privately, locally, and
-            reliably.
+            No accounts, no subscriptions. Just a focused practice tool that
+            runs in your browser - privately, locally, and reliably.
           </p>
 
           <div className="features-grid reveal">
@@ -165,7 +164,7 @@ export default function Home() {
               <h3 className="feature-title">Fully Private</h3>
               <p className="feature-desc">
                 No data leaves your device. No analytics, no tracking, no
-                accounts. All storage is local Chrome storage.
+                accounts.
               </p>
             </article>
           </div>
@@ -330,7 +329,6 @@ export default function Home() {
           >
             GitHub
           </a>
-          <a href="/privacy">Privacy Policy</a>
           <a
             href="https://chromewebstore.google.com"
             target="_blank"
