@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { RevealObserver } from "./reveal-observer";
 
 export default function Home() {
@@ -46,107 +47,18 @@ export default function Home() {
             </svg>
             Add to Chrome - It&apos;s Free
           </a>
-          <a
-            href="https://github.com/iknowmagic/court-interpreter-toolkit"
-            className="btn-ghost"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View on GitHub ↗
-          </a>
         </div>
 
         <div className="preview-wrap">
-          <div className="preview-bar">
-            <div className="preview-dot dot-r" />
-            <div className="preview-dot dot-y" />
-            <div className="preview-dot dot-g" />
-            <span className="preview-url">Court Interpreter Toolkit</span>
-          </div>
-          <div className="preview-img">
-            <div className="mock-app">
-              <div className="mock-header">
-                <div className="mock-header-left">
-                  <div className="mock-title">Court Interpreter</div>
-                  <div className="mock-sub">Daily Practice Session</div>
-                  <div className="mock-sub mock-date">
-                    Wednesday, April 8, 2026
-                  </div>
-                </div>
-                <div className="mock-header-right">
-                  <div className="mock-time">10:28 AM</div>
-                  <div className="mock-progress">0/8 · 55m</div>
-                </div>
-              </div>
-              <div className="mock-body">
-                <div className="mock-list">
-                  <div className="mock-list-header">
-                    <span>#</span>
-                    <span>Task</span>
-                    <span>Time</span>
-                  </div>
-                  <div className="mock-task active">
-                    <span className="mock-task-num">1</span>
-                    <span>Shadowing</span>
-                    <span className="mock-task-time">5m</span>
-                  </div>
-                  <div className="mock-task">
-                    <span className="mock-task-num">2</span>
-                    <span>Vocabulary</span>
-                    <span className="mock-task-time">5m</span>
-                  </div>
-                  <div className="mock-task">
-                    <span className="mock-task-num">3</span>
-                    <span>Sight Translation</span>
-                    <span className="mock-task-time">10m</span>
-                  </div>
-                  <div className="mock-task">
-                    <span className="mock-task-num">4</span>
-                    <span>Vocabulary</span>
-                    <span className="mock-task-time">5m</span>
-                  </div>
-                  <div className="mock-task">
-                    <span className="mock-task-num">5</span>
-                    <span>Consecutive</span>
-                    <span className="mock-task-time">10m</span>
-                  </div>
-                  <div className="mock-task">
-                    <span className="mock-task-num">6</span>
-                    <span>Vocabulary</span>
-                    <span className="mock-task-time">5m</span>
-                  </div>
-                  <div className="mock-task">
-                    <span className="mock-task-num">7</span>
-                    <span>Simultaneous</span>
-                    <span className="mock-task-time">10m</span>
-                  </div>
-                  <div className="mock-task">
-                    <span className="mock-task-num">8</span>
-                    <span>Vocabulary</span>
-                    <span className="mock-task-time">5m</span>
-                  </div>
-                </div>
-                <div className="mock-main">
-                  <div className="mock-current-label">Current Task</div>
-                  <div className="mock-current-name">Shadowing</div>
-                  <div className="mock-timer">05:00</div>
-                  <div className="mock-status">Stopped</div>
-                  <div className="mock-btns">
-                    <div className="mock-btn mock-btn-play">▶ Play</div>
-                    <div className="mock-btn mock-btn-stop">■ Stop</div>
-                  </div>
-                  <div className="mock-btn-row2">
-                    <div className="mock-btn-reset">↺ Reset Task</div>
-                    <div className="mock-btn-done">✓ Done</div>
-                  </div>
-                  <div className="mock-stat-row">
-                    Task <span>1 of 8</span> · Remaining <span>55m</span> · Done{" "}
-                    <span>0/8</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Image
+            src="/screenshot.png"
+            alt="Court Interpreter Toolkit extension interface"
+            className="preview-screenshot"
+            width={1242}
+            height={1130}
+            priority
+            sizes="(max-width: 768px) 100vw, 680px"
+          />
         </div>
       </section>
 
