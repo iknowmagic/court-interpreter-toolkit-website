@@ -1,5 +1,4 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+# Court Interpreter Toolkit Website
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+This Next.js app is the public homepage for the **Court Interpreter Toolkit** Chrome extension.
+It exists to present the product, highlight core features, and direct users to install and support links.
