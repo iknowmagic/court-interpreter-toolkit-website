@@ -2,11 +2,21 @@ import type { Metadata } from "next";
 import { DM_Mono, Lora, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://courtinterpretertoolkit.com";
+const defaultSiteUrl = "https://courtinterpretertoolkit.com";
+const siteUrl = (() => {
+  const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? defaultSiteUrl;
+
+  try {
+    return new URL(configuredSiteUrl).origin;
+  } catch {
+    return defaultSiteUrl;
+  }
+})();
 const pageTitle = "Court Interpreter Toolkit";
 const pageDescription =
   "Practice tool for court interpreters with timed sessions, vocabulary drills, and task management.";
+const socialImagePath = "/og-image.png";
+const socialImageAlt = "Court Interpreter Toolkit social preview";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -29,6 +39,17 @@ export const metadata: Metadata = {
   title: pageTitle,
   description: pageDescription,
   applicationName: pageTitle,
+  keywords: [
+    "court interpreter",
+    "interpreter practice",
+    "legal interpreter",
+    "vocabulary drills",
+    "interpreting toolkit",
+  ],
+  robots: {
+    index: true,
+    follow: true,
+  },
   alternates: {
     canonical: "/",
   },
@@ -45,16 +66,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: siteUrl,
+    url: "/",
     siteName: pageTitle,
     title: pageTitle,
     description: pageDescription,
     images: [
       {
-        url: "/screenshot.png",
-        width: 1242,
-        height: 1130,
-        alt: "Court Interpreter Toolkit interface screenshot",
+        url: socialImagePath,
+        width: 1200,
+        height: 630,
+        type: "image/png",
+        alt: socialImageAlt,
       },
     ],
   },
@@ -62,7 +84,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: pageTitle,
     description: pageDescription,
-    images: ["/screenshot.png"],
+    images: [socialImagePath],
   },
 };
 
