@@ -29,9 +29,9 @@ export default function Home() {
           <em>Every single day.</em>
         </h1>
         <p className="hero-sub">
-          A structured daily practice timer built for court interpreters —
-          shadowing, sight translation, consecutive, simultaneous, vocabulary.
-          All from your browser toolbar.
+          A daily practice timer for court interpreters. Build your own sequence
+          - shadowing, sight translation, consecutive, simultaneous, vocabulary
+          - and run it from your browser toolbar.
         </p>
         <div className="hero-actions">
           <a
@@ -74,7 +74,7 @@ export default function Home() {
           </h2>
           <p className="section-body reveal">
             No accounts, no subscriptions. Just a focused practice tool that
-            runs in your browser - privately, locally, and reliably.
+            runs in your browser.
           </p>
 
           <div className="features-grid reveal">
@@ -89,7 +89,7 @@ export default function Home() {
               <h3 className="feature-title">Background Timer</h3>
               <p className="feature-desc">
                 The timer keeps running even when you close the popup. Your
-                session progress is never lost mid-task.
+                session progress is saved automatically as you work.
               </p>
             </article>
             <article className="feature-card">
@@ -156,15 +156,15 @@ export default function Home() {
             <article className="feature-card">
               <div className="feature-icon">
                 <svg viewBox="0 0 24 24">
-                  <title>Privacy</title>
+                  <title>No account required</title>
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                 </svg>
               </div>
-              <h3 className="feature-title">Fully Private</h3>
+              <h3 className="feature-title">No Account Required</h3>
               <p className="feature-desc">
-                No data leaves your device. No analytics, no tracking, no
-                accounts.
+                Install and use it without signing up. Set your tasks, run your
+                session, and pick up where you left off.
               </p>
             </article>
           </div>
@@ -186,9 +186,9 @@ export default function Home() {
             <article className="audience-item">
               <h3>Certification Candidates</h3>
               <p>
-                Structured daily practice is the most reliable path to passing
-                the California Court Interpreter Certification Exam. This tool
-                keeps you on schedule without the friction.
+                Preparing for the California Court Interpreter Certification
+                Exam? Use this tool to organize daily practice blocks and stay
+                consistent.
               </p>
             </article>
             <article className="audience-item">
@@ -245,8 +245,8 @@ export default function Home() {
                 <h3>Click Play and start practicing</h3>
                 <p>
                   Hit Play on the first task. The timer runs in the background -
-                  close the popup, switch tabs, do whatever. Your session
-                  continues uninterrupted.
+                  close the popup, switch tabs, do whatever. Your session keeps
+                  running while you work.
                 </p>
               </div>
             </article>
@@ -287,7 +287,7 @@ export default function Home() {
           </h2>
           <p className="section-body reveal cta-body">
             Add the extension and run your first structured practice session in
-            under two minutes.
+            just a few minutes.
           </p>
           <div className="reveal">
             <a
