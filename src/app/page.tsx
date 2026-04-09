@@ -280,9 +280,6 @@ export default function Home() {
 
       <section className="cta-section">
         <div className="section-inner cta-inner">
-          <p className="section-label reveal cta-label">
-            Free. Open source. No signup.
-          </p>
           <h2 className="section-heading reveal cta-heading">
             Your next session starts
             <br />
@@ -301,20 +298,6 @@ export default function Home() {
             >
               Add to Chrome - It&apos;s Free →
             </a>
-          </div>
-          <div className="cta-badges reveal">
-            <span className="badge">
-              <span className="badge-dot" /> No account required
-            </span>
-            <span className="badge">
-              <span className="badge-dot" /> No data collected
-            </span>
-            <span className="badge">
-              <span className="badge-dot" /> Open source
-            </span>
-            <span className="badge">
-              <span className="badge-dot" /> Free forever
-            </span>
           </div>
         </div>
       </section>

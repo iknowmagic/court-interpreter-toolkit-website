@@ -2,9 +2,19 @@ import type { Metadata } from "next";
 import { DM_Mono, Lora, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
-const defaultSiteUrl = "https://courtinterpretertoolkit.com";
+const defaultSiteUrl = "https://court-interpreter-toolkit.vercel.app";
 const siteUrl = (() => {
-  const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? defaultSiteUrl;
+  const vercelProdUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : undefined;
+  const vercelPreviewUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : undefined;
+  const configuredSiteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    vercelProdUrl ??
+    vercelPreviewUrl ??
+    defaultSiteUrl;
 
   try {
     return new URL(configuredSiteUrl).origin;
