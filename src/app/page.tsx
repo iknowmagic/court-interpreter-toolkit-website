@@ -10,7 +10,7 @@ export default function Home() {
           Court Interpreter <span>Toolkit</span>
         </a>
         <a
-          href="https://chromewebstore.google.com"
+          href="https://chromewebstore.google.com/detail/court-interpreter-toolkit/ghbnejickfddbmfjkgofklghbmaambhb"
           className="nav-cta"
           target="_blank"
           rel="noopener noreferrer"
@@ -35,7 +35,7 @@ export default function Home() {
         </p>
         <div className="hero-actions">
           <a
-            href="https://chromewebstore.google.com"
+            href="https://chromewebstore.google.com/detail/court-interpreter-toolkit/ghbnejickfddbmfjkgofklghbmaambhb"
             className="btn-primary"
             target="_blank"
             rel="noopener noreferrer"
@@ -291,7 +291,7 @@ export default function Home() {
           </p>
           <div className="reveal">
             <a
-              href="https://chromewebstore.google.com"
+              href="https://chromewebstore.google.com/detail/court-interpreter-toolkit/ghbnejickfddbmfjkgofklghbmaambhb"
               className="btn-primary cta-button"
               target="_blank"
               rel="noopener noreferrer"
@@ -306,14 +306,14 @@ export default function Home() {
         <div className="footer-logo">Court Interpreter Toolkit</div>
         <div className="footer-links">
           <a
-            href="https://github.com/iknowmagic/court-interpreter-toolkit"
+            href="https://github.com/iknowmagic/court-interpreter-toolkit-chrome"
             target="_blank"
             rel="noopener noreferrer"
           >
             GitHub
           </a>
           <a
-            href="https://chromewebstore.google.com"
+            href="https://chromewebstore.google.com/detail/court-interpreter-toolkit/ghbnejickfddbmfjkgofklghbmaambhb"
             target="_blank"
             rel="noopener noreferrer"
           >
