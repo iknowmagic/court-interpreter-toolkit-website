@@ -174,10 +174,6 @@ export default function Home() {
 
       <hr className="section-rule" />
 
-      <div className="reveal text-center m-4!">
-        <FeedbackDialog />
-      </div>
-
       <section className="audience-section">
         <div className="section-inner">
           <p className="section-label reveal">Who it&apos;s for</p>
@@ -303,6 +299,9 @@ export default function Home() {
             >
               Add to Chrome - It&apos;s Free →
             </a>
+          </div>
+          <div className="reveal">
+            <FeedbackDialog />
           </div>
         </div>
       </section>
