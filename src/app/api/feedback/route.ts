@@ -5,11 +5,13 @@ import {
   DEFAULT_FEEDBACK_SUBMIT_ERROR_MESSAGE,
   FEEDBACK_MAX_EMAIL_LENGTH,
   FEEDBACK_MAX_MESSAGE_LENGTH,
+  FEEDBACK_MESSAGE_TOO_LONG_ERROR_MESSAGE,
   FEEDBACK_SCORE_LABELS,
   FEEDBACK_SCORE_VALUES,
   type FeedbackScore,
   getFollowUpEmailError,
   normalizeFeedbackEmail,
+  REQUIRED_FEEDBACK_MESSAGE_ERROR_MESSAGE,
 } from "@/lib/feedback";
 
 export const runtime = "nodejs";
@@ -20,7 +22,7 @@ const DEFAULT_RECIPIENT = "courtinterpretertoolkit@gmail.com";
 const TEST_MODE_RECIPIENT_LIMIT_MESSAGE =
   "Resend is in testing mode and can only send to your account email right now.";
 const MISSING_API_KEY_MESSAGE =
-  "Feedback is not configured yet. Missing RESEND_API_KEY.";
+  "Feedback is not configured yet. Missing RENDER_API_KEY.";
 const MISSING_RECIPIENT_MESSAGE =
   "Feedback is not configured yet. Missing feedback recipient email.";
 const INVALID_REQUEST_MESSAGE = "Invalid request payload.";
@@ -92,7 +94,7 @@ function parseRecipientList(raw: string | undefined) {
 }
 
 function readFeedbackRouteConfig() {
-  const apiKey = process.env.RESEND_API_KEY ?? process.env.RENDER_API_KEY;
+  const apiKey = process.env.RENDER_API_KEY ?? process.env.RESEND_API_KEY;
   const fromAddress =
     process.env.RESEND_FROM_EMAIL ??
     process.env.FEEDBACK_FROM_EMAIL ??
@@ -108,6 +110,24 @@ function readFeedbackRouteConfig() {
     fromAddress,
     recipients,
   };
+}
+
+function resolvePayloadValidationMessage(validationError: z.ZodError<unknown>) {
+  for (const issue of validationError.issues) {
+    if (issue.path[0] !== "message") {
+      continue;
+    }
+
+    if (issue.code === "too_small") {
+      return REQUIRED_FEEDBACK_MESSAGE_ERROR_MESSAGE;
+    }
+
+    if (issue.code === "too_big") {
+      return FEEDBACK_MESSAGE_TOO_LONG_ERROR_MESSAGE;
+    }
+  }
+
+  return INVALID_REQUEST_MESSAGE;
 }
 
 function validateFollowUpEmail(requestBody: FeedbackRequest):
@@ -178,7 +198,10 @@ export async function POST(request: Request) {
 
   const parsedRequest = feedbackRequestSchema.safeParse(requestBody);
   if (!parsedRequest.success) {
-    return createErrorResponse(400, INVALID_REQUEST_MESSAGE);
+    return createErrorResponse(
+      400,
+      resolvePayloadValidationMessage(parsedRequest.error),
+    );
   }
 
   const validatedFollowUpEmail = validateFollowUpEmail(parsedRequest.data);

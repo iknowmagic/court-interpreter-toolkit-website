@@ -1,45 +1,29 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   DEFAULT_FEEDBACK_SUBMIT_ERROR_MESSAGE,
   FEEDBACK_MAX_MESSAGE_LENGTH,
   type FeedbackScore,
-  getFollowUpEmailError,
+  getFollowUpEmailError as getFollowUpEmailValidationError,
   isFeedbackEmailValidationMessage,
   normalizeFeedbackEmail,
+  REQUIRED_FEEDBACK_MESSAGE_ERROR_MESSAGE,
 } from "@/lib/feedback";
 import { cn } from "@/lib/utils";
-import { Button } from "@/shadcn/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/shadcn/ui/dialog";
-import {
-  Field,
-  FieldError,
-  FieldLabel,
-  FieldLegend,
-  FieldSet,
-} from "@/shadcn/ui/field";
-import { Input } from "@/shadcn/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/shadcn/ui/radio-group";
-import { Textarea } from "@/shadcn/ui/textarea";
 
 const FEEDBACK_OPTIONS = [
-  {
-    value: "not-great",
-    label: "Not great",
-    imageSrc: "/feedback/not-great.png",
-  },
-  { value: "ok", label: "OK", imageSrc: "/feedback/ok.png" },
-  { value: "good", label: "Good", imageSrc: "/feedback/good.png" },
-  { value: "amazing", label: "Loved it", imageSrc: "/feedback/amazing.png" },
+  { value: "not-great", label: "Not great", imageSrc: "/not-great.png" },
+  { value: "ok", label: "OK", imageSrc: "/ok.png" },
+  { value: "good", label: "Good", imageSrc: "/good.png" },
+  { value: "amazing", label: "Loved it", imageSrc: "/amazing.png" },
 ] as const satisfies ReadonlyArray<{
   value: FeedbackScore;
   label: string;
@@ -51,15 +35,39 @@ const FOLLOW_UP_OPTIONS = [
   { value: "no", label: "No" },
 ] as const;
 
-const RATE_LIMIT_SUBMIT_ERROR_MESSAGE =
-  "Too many requests, please try again in 10 minutes.";
-const TEMPORARY_DELIVERY_ERROR_MESSAGE =
-  "We could not send your note right now. Please try again in a minute.";
-
 type FollowUpChoice = "yes" | "no";
 type FeedbackApiResponse = {
   message?: string;
 } | null;
+
+const DEFAULT_SCORE: FeedbackScore = "good";
+// Debug toggle: force the thank-you state without submitting.
+const DEBUG_FORCE_THANK_YOU_VIEW = false;
+const RATE_LIMIT_SUBMIT_ERROR_MESSAGE =
+  "Too many requests, please try again in 10 minutes.";
+const TEMPORARY_DELIVERY_ERROR_MESSAGE =
+  "We could not send your note right now. Please try again in a minute.";
+const TEMPORARY_SUBMIT_BLOCKED_MESSAGE =
+  "We could not submit this note right now. Please try again.";
+
+type FeedbackOption = (typeof FEEDBACK_OPTIONS)[number];
+type FeedbackDialogView = "form" | "thankyou";
+type FeedbackDialogProps = {
+  defaultOpen?: boolean;
+  forceView?: FeedbackDialogView;
+  showTrigger?: boolean;
+};
+
+function getFollowUpChoiceEmailError(
+  followUpChoice: FollowUpChoice,
+  rawEmail: string,
+) {
+  const normalizedEmail = normalizeFeedbackEmail(rawEmail);
+  return getFollowUpEmailValidationError(
+    followUpChoice === "yes",
+    normalizedEmail,
+  );
+}
 
 function resolveSubmitErrorMessage(
   statusCode: number,
@@ -73,31 +81,43 @@ function resolveSubmitErrorMessage(
     return TEMPORARY_DELIVERY_ERROR_MESSAGE;
   }
 
+  if (statusCode === 403) {
+    return TEMPORARY_SUBMIT_BLOCKED_MESSAGE;
+  }
+
   return apiMessage ?? DEFAULT_FEEDBACK_SUBMIT_ERROR_MESSAGE;
 }
 
-export function FeedbackDialog() {
-  const [open, setOpen] = useState(false);
-  const [score, setScore] = useState<FeedbackScore>("good");
+export function FeedbackDialog({
+  defaultOpen = false,
+  forceView,
+  showTrigger = true,
+}: FeedbackDialogProps = {}) {
+  const formScrollContainerRef = useRef<HTMLDivElement>(null);
+  const formActionAreaRef = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(defaultOpen);
+  const [score, setScore] = useState<FeedbackScore>(DEFAULT_SCORE);
   const [message, setMessage] = useState("");
   const [followUpChoice, setFollowUpChoice] = useState<FollowUpChoice>("no");
   const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
-
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const showFollowUpEmail = followUpChoice === "yes";
+  const showThankYouView =
+    forceView === "thankyou" || hasSubmitted || DEBUG_FORCE_THANK_YOU_VIEW;
+  const showFollowUpThankYouMessage = followUpChoice === "yes";
 
   function resetFormState() {
-    setScore("good");
+    setScore(DEFAULT_SCORE);
     setMessage("");
     setFollowUpChoice("no");
     setEmail("");
     setEmailError(null);
     setSubmitError(null);
-    setIsSubmitting(false);
     setHasSubmitted(false);
+    setIsSubmitting(false);
   }
 
   function handleOpenChange(nextOpen: boolean) {
@@ -108,40 +128,63 @@ export function FeedbackDialog() {
     setOpen(nextOpen);
   }
 
-  function handleClose() {
-    if (isSubmitting) {
-      return;
-    }
-
-    setOpen(false);
-    resetFormState();
-  }
-
   function clearSubmitError() {
     if (submitError) {
       setSubmitError(null);
     }
   }
 
-  function handleFollowUpChoiceChange(value: string) {
-    const nextChoice: FollowUpChoice = value === "yes" ? "yes" : "no";
-    setFollowUpChoice(nextChoice);
+  function handleMessageChange(value: string) {
+    setMessage(value);
+    clearSubmitError();
+  }
 
-    if (nextChoice === "no") {
-      setEmailError(null);
-    }
-
+  function handleScoreChange(value: FeedbackScore) {
+    setScore(value);
     clearSubmitError();
   }
 
   function handleEmailChange(value: string) {
     setEmail(value);
-
     if (emailError) {
       setEmailError(null);
     }
-
     clearSubmitError();
+  }
+
+  function handleCancel() {
+    setOpen(false);
+    resetFormState();
+  }
+
+  function handleFollowUpChoiceChange(value: string) {
+    const nextChoice: FollowUpChoice = value === "yes" ? "yes" : "no";
+    setFollowUpChoice(nextChoice);
+    if (nextChoice === "no") {
+      setEmailError(null);
+    }
+    clearSubmitError();
+  }
+
+  function scrollFormToBottom() {
+    requestAnimationFrame(() => {
+      const scrollContainer = formScrollContainerRef.current;
+      if (scrollContainer) {
+        scrollContainer.scrollTo({
+          top: scrollContainer.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+      formActionAreaRef.current?.scrollIntoView({
+        block: "end",
+        behavior: "smooth",
+      });
+    });
+  }
+
+  function setEmailErrorAndReveal(errorMessage: string) {
+    setEmailError(errorMessage);
+    scrollFormToBottom();
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -153,19 +196,16 @@ export function FeedbackDialog() {
 
     const trimmedMessage = message.trim();
     if (!trimmedMessage) {
-      setSubmitError("Please include a quick note before sending.");
+      setSubmitError(REQUIRED_FEEDBACK_MESSAGE_ERROR_MESSAGE);
+      scrollFormToBottom();
       return;
     }
 
     const shouldFollowUp = followUpChoice === "yes";
     const normalizedEmail = normalizeFeedbackEmail(email);
-    const nextEmailError = getFollowUpEmailError(
-      shouldFollowUp,
-      normalizedEmail,
-    );
-
+    const nextEmailError = getFollowUpChoiceEmailError(followUpChoice, email);
     if (nextEmailError) {
-      setEmailError(nextEmailError);
+      setEmailErrorAndReveal(nextEmailError);
       return;
     }
 
@@ -191,19 +231,16 @@ export function FeedbackDialog() {
       const payload = (await response
         .json()
         .catch(() => null)) as FeedbackApiResponse;
-
       if (!response.ok) {
-        const errorMessage = resolveSubmitErrorMessage(
+        const message = resolveSubmitErrorMessage(
           response.status,
           payload?.message,
         );
-
-        if (isFeedbackEmailValidationMessage(errorMessage)) {
-          setEmailError(errorMessage);
+        if (isFeedbackEmailValidationMessage(message)) {
+          setEmailErrorAndReveal(message);
           return;
         }
-
-        throw new Error(errorMessage);
+        throw new Error(message);
       }
 
       setHasSubmitted(true);
@@ -213,6 +250,7 @@ export function FeedbackDialog() {
           ? error.message
           : DEFAULT_FEEDBACK_SUBMIT_ERROR_MESSAGE,
       );
+      scrollFormToBottom();
     } finally {
       setIsSubmitting(false);
     }
@@ -220,157 +258,186 @@ export function FeedbackDialog() {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <p className="support-note">
-        Have a question or suggestion?{" "}
-        <DialogTrigger className="support-note-trigger">
-          Leave me a note.
-        </DialogTrigger>
-      </p>
-      <DialogContent className="feedback-modal" showCloseButton={!isSubmitting}>
-        {hasSubmitted ? (
-          <div className="feedback-thank-you">
-            <h3>Thanks for the note.</h3>
-            <p>
-              {followUpChoice === "yes"
-                ? "I will follow up by email soon."
-                : "I read every message and use it to improve the toolkit."}
+      {showTrigger ? (
+        <p className="support-note">
+          Have a question or suggestion?{" "}
+          <DialogTrigger className="support-note-trigger">
+            Leave me a note.
+          </DialogTrigger>
+        </p>
+      ) : null}
+
+      <DialogContent className="feedback-dialog">
+        {showThankYouView ? (
+          <div className="thankyou-modal">
+            <p className="modal-eyebrow">Court Interpreter Toolkit</p>
+
+            <Image
+              src="/amazing.png"
+              alt="Happy owl"
+              width={140}
+              height={140}
+              className="thankyou-image"
+            />
+
+            <DialogTitle className="thankyou-title">Thank you!</DialogTitle>
+            <p className="thankyou-body">
+              Your feedback helps improve the site.
             </p>
-            <Button type="button" onClick={handleClose}>
+            {showFollowUpThankYouMessage ? (
+              <p className="thankyou-body thankyou-body-follow-up">
+                I&apos;ll reply to your note soon.
+              </p>
+            ) : null}
+
+            <hr className="modal-rule" />
+
+            <button type="button" className="btn-close" onClick={handleCancel}>
               Close
-            </Button>
+            </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="feedback-form" noValidate>
-            <DialogHeader className="feedback-modal-header">
-              <DialogTitle className="feedback-modal-title">
-                Leave me a note
+          <form
+            className="feedback-form-shell"
+            onSubmit={handleSubmit}
+            noValidate
+          >
+            <div ref={formScrollContainerRef} className="feedback-scroll-area">
+              <p className="modal-subtitle">Court Interpreter Toolkit</p>
+              <DialogTitle className="modal-title">
+                Leave me a note.
               </DialogTitle>
-              <DialogDescription className="feedback-modal-description">
-                Questions, suggestions, or bugs are all welcome.
-              </DialogDescription>
-            </DialogHeader>
 
-            <FieldSet className="feedback-fieldset">
-              <FieldLegend className="feedback-legend">
-                How is the toolkit working for you?
-              </FieldLegend>
-              <div className="feedback-score-grid">
-                {FEEDBACK_OPTIONS.map((option) => (
-                  <Button
-                    type="button"
-                    variant="ghost"
+              <span className="field-label">How does the Chrome app feel?</span>
+              <div
+                className="sentiment-grid"
+                role="radiogroup"
+                aria-label="Rating"
+              >
+                {FEEDBACK_OPTIONS.map((option: FeedbackOption) => (
+                  <button
                     key={option.value}
-                    onClick={() => setScore(option.value)}
+                    type="button"
                     className={cn(
-                      "feedback-score-card",
-                      score === option.value && "is-selected",
+                      "sentiment-card",
+                      option.value === score && "selected",
                     )}
-                    aria-pressed={score === option.value}
+                    aria-pressed={option.value === score}
                     aria-label={`Feedback option: ${option.label}`}
+                    onClick={() => handleScoreChange(option.value)}
+                    disabled={isSubmitting}
                   >
                     <Image
                       src={option.imageSrc}
                       alt=""
-                      width={96}
-                      height={131}
-                      className="feedback-score-image"
+                      width={52}
+                      height={52}
+                      className="sentiment-img"
                     />
-                    <span className="feedback-score-label">{option.label}</span>
-                  </Button>
+                    <span className="sentiment-label">{option.label}</span>
+                  </button>
                 ))}
               </div>
-            </FieldSet>
 
-            <Field className="feedback-field">
-              <FieldLabel htmlFor="feedback-message" className="feedback-label">
-                Message
-              </FieldLabel>
-              <Textarea
+              <hr className="modal-rule" />
+
+              <label className="field-label" htmlFor="feedback-message">
+                Anything we could improve?
+              </label>
+              <textarea
                 id="feedback-message"
                 name="message"
                 value={message}
-                onChange={(event) => {
-                  setMessage(event.target.value);
-                  clearSubmitError();
-                }}
+                onChange={(event) => handleMessageChange(event.target.value)}
+                placeholder="There's..."
+                rows={4}
                 maxLength={FEEDBACK_MAX_MESSAGE_LENGTH}
-                placeholder="What would you like me to know?"
-                className="feedback-textarea"
+                className="modal-textarea"
               />
-            </Field>
 
-            <FieldSet className="feedback-fieldset">
-              <FieldLegend className="feedback-legend">
-                Want a reply?
-              </FieldLegend>
-              <RadioGroup
-                name="follow-up"
-                value={followUpChoice}
-                onValueChange={handleFollowUpChoiceChange}
-                className="feedback-follow-up-group"
-              >
-                {FOLLOW_UP_OPTIONS.map((option) => (
-                  <Field
-                    key={option.value}
-                    orientation="horizontal"
-                    className="feedback-radio-field"
-                  >
-                    <RadioGroupItem
-                      id={`feedback-follow-up-${option.value}`}
-                      value={option.value}
-                      className="feedback-radio"
-                    />
-                    <FieldLabel
-                      htmlFor={`feedback-follow-up-${option.value}`}
-                      className="feedback-radio-label"
-                    >
+              <div className="reply-section">
+                <span className="field-label">Want a reply?</span>
+                <div
+                  className="radio-group"
+                  role="radiogroup"
+                  aria-label="Want a reply"
+                >
+                  {FOLLOW_UP_OPTIONS.map((option) => (
+                    <label key={option.value} className="radio-label">
+                      <input
+                        type="radio"
+                        name="want-reply"
+                        value={option.value}
+                        checked={followUpChoice === option.value}
+                        onChange={() =>
+                          handleFollowUpChoiceChange(option.value)
+                        }
+                        disabled={isSubmitting}
+                      />
                       {option.label}
-                    </FieldLabel>
-                  </Field>
-                ))}
-              </RadioGroup>
-            </FieldSet>
+                    </label>
+                  ))}
+                </div>
 
-            {showFollowUpEmail ? (
-              <Field className="feedback-field" data-invalid={!!emailError}>
-                <FieldLabel htmlFor="feedback-email" className="feedback-label">
-                  Email for follow-up
-                </FieldLabel>
-                <Input
-                  id="feedback-email"
-                  name="email"
-                  type="email"
-                  value={email}
-                  onChange={(event) => handleEmailChange(event.target.value)}
-                  onBlur={() => {
-                    const nextEmailError = getFollowUpEmailError(
-                      followUpChoice === "yes",
-                      normalizeFeedbackEmail(email),
-                    );
-                    setEmailError(nextEmailError);
-                  }}
-                  autoComplete="email"
-                  aria-invalid={emailError ? "true" : undefined}
-                  className="feedback-input"
-                />
-                <FieldError>{emailError}</FieldError>
-              </Field>
-            ) : null}
+                <div
+                  className={cn(
+                    "email-field-wrap",
+                    showFollowUpEmail && "visible",
+                  )}
+                >
+                  <div className="email-field-inner">
+                    <label htmlFor="feedback-email">Email for follow-up</label>
+                    <input
+                      id="feedback-email"
+                      name="email"
+                      type="email"
+                      value={email}
+                      onChange={(event) =>
+                        handleEmailChange(event.target.value)
+                      }
+                      onBlur={() => {
+                        const nextEmailError = getFollowUpChoiceEmailError(
+                          followUpChoice,
+                          email.trim(),
+                        );
+                        setEmailError(nextEmailError);
+                      }}
+                      autoComplete="email"
+                      aria-invalid={emailError ? "true" : undefined}
+                      className={cn("modal-input", emailError && "has-error")}
+                      placeholder="you@example.com"
+                    />
+                    {emailError ? (
+                      <p className="feedback-error">{emailError}</p>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+            </div>
 
-            <FieldError>{submitError}</FieldError>
-
-            <div className="feedback-actions">
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Sending..." : "Send note"}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                disabled={isSubmitting}
-                onClick={handleClose}
-              >
-                Cancel
-              </Button>
+            <div ref={formActionAreaRef} className="feedback-actions-area">
+              {submitError ? (
+                <p className="feedback-error feedback-submit-error">
+                  {submitError}
+                </p>
+              ) : null}
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn-cancel"
+                  onClick={handleCancel}
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-send"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Sending..." : "Send"}
+                </button>
+              </div>
             </div>
           </form>
         )}
