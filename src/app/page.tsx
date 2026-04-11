@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { FeedbackDialog } from "./feedback-dialog";
 import { RevealObserver } from "./reveal-observer";
 
 export default function Home() {
@@ -298,6 +299,9 @@ export default function Home() {
             >
               Add to Chrome - It&apos;s Free →
             </a>
+          </div>
+          <div className="reveal">
+            <FeedbackDialog />
           </div>
         </div>
       </section>
