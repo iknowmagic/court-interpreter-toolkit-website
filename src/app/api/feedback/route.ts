@@ -11,7 +11,6 @@ import {
   type FeedbackScore,
   getFollowUpEmailError,
   normalizeFeedbackEmail,
-  REQUIRED_FEEDBACK_MESSAGE_ERROR_MESSAGE,
 } from "@/lib/feedback";
 
 export const runtime = "nodejs";
@@ -29,7 +28,7 @@ const INVALID_REQUEST_MESSAGE = "Invalid request payload.";
 
 const feedbackRequestSchema = z.object({
   score: z.enum(FEEDBACK_SCORE_VALUES),
-  message: z.string().trim().min(1).max(FEEDBACK_MAX_MESSAGE_LENGTH),
+  message: z.string().trim().max(FEEDBACK_MAX_MESSAGE_LENGTH),
   mayFollowUp: z.boolean(),
   email: z.string().trim().max(FEEDBACK_MAX_EMAIL_LENGTH).nullable().optional(),
   pagePath: z.string().trim().max(300).optional(),
@@ -116,10 +115,6 @@ function resolvePayloadValidationMessage(validationError: z.ZodError<unknown>) {
   for (const issue of validationError.issues) {
     if (issue.path[0] !== "message") {
       continue;
-    }
-
-    if (issue.code === "too_small") {
-      return REQUIRED_FEEDBACK_MESSAGE_ERROR_MESSAGE;
     }
 
     if (issue.code === "too_big") {

@@ -9,7 +9,6 @@ import {
   getFollowUpEmailError as getFollowUpEmailValidationError,
   isFeedbackEmailValidationMessage,
   normalizeFeedbackEmail,
-  REQUIRED_FEEDBACK_MESSAGE_ERROR_MESSAGE,
 } from "@/lib/feedback";
 import { cn } from "@/lib/utils";
 import {
@@ -195,11 +194,6 @@ export function FeedbackDialog({
     }
 
     const trimmedMessage = message.trim();
-    if (!trimmedMessage) {
-      setSubmitError(REQUIRED_FEEDBACK_MESSAGE_ERROR_MESSAGE);
-      scrollFormToBottom();
-      return;
-    }
 
     const shouldFollowUp = followUpChoice === "yes";
     const normalizedEmail = normalizeFeedbackEmail(email);

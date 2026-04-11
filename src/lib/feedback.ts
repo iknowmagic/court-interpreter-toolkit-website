@@ -17,8 +17,6 @@ export const FEEDBACK_SCORE_LABELS: Record<FeedbackScore, string> = {
 export const FEEDBACK_MAX_MESSAGE_LENGTH = 2000;
 export const FEEDBACK_MAX_EMAIL_LENGTH = 320;
 
-export const REQUIRED_FEEDBACK_MESSAGE_ERROR_MESSAGE =
-  "Please include a quick note before sending.";
 export const FEEDBACK_MESSAGE_TOO_LONG_ERROR_MESSAGE = `Please keep your note under ${FEEDBACK_MAX_MESSAGE_LENGTH} characters.`;
 export const REQUIRED_EMAIL_ERROR_MESSAGE = "Add an email so we can reply.";
 export const INVALID_EMAIL_ERROR_MESSAGE = "That email does not look right.";
