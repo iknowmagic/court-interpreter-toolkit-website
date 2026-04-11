@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import { DM_Mono, Lora, Playfair_Display } from "next/font/google";
+import { DM_Mono, Lora, Playfair_Display, Geist } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const defaultSiteUrl = "https://court-interpreter-toolkit.vercel.app";
 const siteUrl = (() => {
@@ -107,7 +110,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${playfair.variable} ${lora.variable} ${dmMono.variable} h-full antialiased`}
+      className={cn("h-full", "antialiased", playfair.variable, lora.variable, dmMono.variable, "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
