@@ -931,6 +931,10 @@ section {
   color: var(--terra);
 }
 
+.modal-eyebrow {
+  margin-bottom: 20px;
+}
+
 .modal-subtitle {
   margin-bottom: 0.6rem;
 }
@@ -1243,7 +1247,7 @@ section {
   object-fit: contain;
   display: block;
   margin: 0 auto 2rem;
-  background: #0d0b09;
+  background: #f0e8d8;
   border: 0.5px solid rgb(240 232 216 / 7%);
   border-radius: 4px;
 }
