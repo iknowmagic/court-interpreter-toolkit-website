@@ -1306,7 +1306,89 @@ section {
 
 @media (max-width: 720px) {
   .site-nav {
+    flex-wrap: wrap;
+    gap: 0.75rem;
     padding: 1rem 1.25rem;
+  }
+
+  .nav-logo {
+    font-size: 0.95rem;
+  }
+
+  .nav-cta {
+    padding: 0.4rem 0.85rem;
+    font-size: 0.7rem;
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 6.75rem 1.15rem 4.5rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.2rem, 11vw, 3.3rem);
+  }
+
+  .hero-sub {
+    margin-top: 1.25rem;
+    font-size: 1rem;
+  }
+
+  .hero-actions {
+    gap: 0.9rem;
+    margin-top: 2rem;
+  }
+
+  .btn-primary {
+    width: 100%;
+    justify-content: center;
+    padding: 0.9rem 1.25rem;
+  }
+
+  .preview-wrap {
+    margin-top: 2.5rem;
+  }
+
+  section {
+    padding: 4.5rem 1.15rem;
+  }
+
+  .section-body {
+    margin-bottom: 2.5rem;
+  }
+
+  .feature-card,
+  .step-content {
+    padding: 1.25rem 1rem;
+  }
+
+  .steps {
+    margin-top: 2.25rem;
+  }
+
+  .step {
+    grid-template-columns: 2.5rem 1fr;
+  }
+
+  .step-num {
+    font-size: 0.58rem;
+  }
+
+  .step-content h3 {
+    font-size: 0.95rem;
+  }
+
+  .cta-section {
+    padding: 5rem 1.15rem;
+  }
+
+  .cta-body {
+    margin-bottom: 2rem;
+  }
+
+  .cta-button {
+    width: 100%;
+    justify-content: center;
   }
 
   .hero-actions {
@@ -1343,17 +1425,31 @@ section {
     max-height: 92dvh;
   }
 
+  .feedback-dialog [data-slot="dialog-close"] {
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+
   .feedback-scroll-area {
-    padding: 1.5rem 1rem 0;
+    padding: 1.35rem 0.9rem 0;
   }
 
   .feedback-actions-area {
-    padding: 1.1rem 1rem 1rem;
+    padding: 1rem 0.9rem 0.95rem;
+  }
+
+  .support-note-trigger {
+    display: inline;
   }
 
   .modal-title {
-    margin-bottom: 1.35rem;
-    font-size: 1.45rem;
+    margin-bottom: 1.2rem;
+    font-size: 1.35rem;
+  }
+
+  .modal-subtitle,
+  .modal-eyebrow {
+    letter-spacing: 0.09em;
   }
 
   .sentiment-grid {
@@ -1381,11 +1477,149 @@ section {
   }
 
   .thankyou-modal {
-    padding: 1.85rem 1rem 1.35rem;
+    padding: 1.75rem 0.9rem 1.25rem;
+  }
+
+  .thankyou-image {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1.35rem;
   }
 
   .thankyou-title {
-    font-size: 1.75rem;
+    font-size: 1.55rem;
+  }
+
+  .thankyou-body {
+    max-width: 24rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-nav {
+    padding: 0.85rem 1rem;
+  }
+
+  .nav-logo {
+    font-size: 0.9rem;
+  }
+
+  .nav-cta {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero {
+    padding-top: 6.25rem;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+  }
+
+  .hero-sub {
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+
+  .section-heading {
+    font-size: clamp(1.7rem, 8vw, 2.15rem);
+  }
+
+  .section-label {
+    margin-bottom: 0.85rem;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .audience-grid {
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .step {
+    grid-template-columns: 1fr;
+  }
+
+  .step-num {
+    width: 100%;
+    min-height: 2.5rem;
+    border-right: none;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .step-content {
+    padding: 1rem 0.9rem 1.1rem;
+  }
+
+  .step-content h3 {
+    font-size: 0.92rem;
+  }
+
+  .cta-section {
+    padding: 4.25rem 1rem;
+  }
+
+  .site-footer {
+    padding: 1.75rem 1rem;
+  }
+
+  .footer-links {
+    gap: 1rem;
+    flex-direction: column;
+  }
+
+  .feedback-dialog {
+    width: min(100% - 0.75rem, 32.5rem);
+    max-height: 94dvh;
+  }
+
+  .feedback-scroll-area {
+    padding: 1.2rem 0.8rem 0;
+  }
+
+  .feedback-actions-area {
+    padding: 0.9rem 0.8rem 0.85rem;
+  }
+
+  .modal-title {
+    font-size: 1.25rem;
+  }
+
+  .modal-textarea {
+    min-height: 96px;
+    margin-bottom: 1.4rem;
+  }
+
+  .radio-group {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .radio-label {
+    font-size: 0.72rem;
+  }
+
+  .thankyou-modal {
+    padding: 1.5rem 0.8rem 1.1rem;
+  }
+
+  .thankyou-image {
+    width: 108px;
+    height: 108px;
+    margin-bottom: 1.15rem;
+  }
+
+  .thankyou-title {
+    font-size: 1.4rem;
+  }
+
+  .thankyou-body {
+    font-size: 0.88rem;
   }
 }
 
