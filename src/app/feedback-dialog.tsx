@@ -72,6 +72,10 @@ function resolveSubmitErrorMessage(
   statusCode: number,
   apiMessage: string | undefined,
 ) {
+  if (apiMessage && apiMessage.trim().length > 0) {
+    return apiMessage;
+  }
+
   if (statusCode === 429) {
     return RATE_LIMIT_SUBMIT_ERROR_MESSAGE;
   }
