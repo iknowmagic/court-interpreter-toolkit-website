@@ -3,7 +3,7 @@ import { DM_Mono, Lora, Playfair_Display, Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const defaultSiteUrl = "https://court-interpreter-toolkit.vercel.app";
 const siteUrl = (() => {
@@ -28,7 +28,7 @@ const siteUrl = (() => {
 const pageTitle = "Court Interpreter Toolkit";
 const pageDescription =
   "Practice tool for court interpreters with timed sessions, vocabulary drills, and task management.";
-const socialImagePath = "/og-image.png";
+const socialImagePath = "/og-image.jpg";
 const socialImageAlt = "Court Interpreter Toolkit social preview";
 
 const playfair = Playfair_Display({
@@ -110,7 +110,15 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("h-full", "antialiased", playfair.variable, lora.variable, dmMono.variable, "font-sans", geist.variable)}
+      className={cn(
+        "h-full",
+        "antialiased",
+        playfair.variable,
+        lora.variable,
+        dmMono.variable,
+        "font-sans",
+        geist.variable,
+      )}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
